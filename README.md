@@ -48,3 +48,4 @@ whammy_cross.encodeWEBM(function(videoBlob){
 2. Chrome 
 3. Opera 
 4. Firefox
+5. Safari 

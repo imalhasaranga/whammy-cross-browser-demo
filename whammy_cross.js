@@ -392,7 +392,7 @@ var WhammyCrs;
 	
 	WhammyVideo.prototype.compile = function(){
 		return new toWebM(this.frames.map(function(frame){
-			var webp = parseWebP(parseRIFF(atob(frame.image.slice(23))));
+			var webp = parseWebP(parseRIFF(base64.decode(frame.image.slice(23))));
 			webp.duration = frame.duration;
 			return webp;
 		}))
@@ -402,7 +402,7 @@ var WhammyCrs;
 		Video: WhammyVideo,
 		fromImageArray: function(images, fps){
 			return toWebM(images.map(function(image){
-				var webp = parseWebP(parseRIFF(atob(image.slice(23))))
+				var webp = parseWebP(parseRIFF(base64.decode(image.slice(23))))
 				webp.duration = 1000 / fps;
 				return webp;
 			}))
