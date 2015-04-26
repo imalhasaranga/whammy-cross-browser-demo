@@ -5,9 +5,40 @@ but at this moment only chrome and opera are the only browsers that support for 
 
 this effort is to show that with some slight modification we still can use whammy.js to run in all the browsers.
 
-##### FUTURE IMPROVEMENTS 
+How to use 
 
-when running this file in your local browser you will notice that first clock tick takes lot of time and having a performance problem
-that is because I'm encoding the image retrived by the canvs to webp manually using  'libwebp-0.1.3.min.js'  but my understanding is that by using a web worker 
-we can avoid this issue. 
-I'll try to implement it soon. 
+```
+
+//how to initialize
+var whammy_cross = new WhammyCrs();
+whammy_cross.reset();
+whammy_cross.progress = function(presentatge){
+	//calls when webm encodes and shows presentage	
+}
+
+whammy_cross.onConvert = function(convetedcount){
+	//number of frames converted 
+}
+
+
+//according to a specific rate each frame data should pass to whammy_cross object
+
+whammy_cross.addFrame(ctxz.getImageData(0,0,w,h).data,w,h);
+
+//at the end, encode for webm
+whammy_cross.setFrameRate(framerate);
+whammy_cross.encodeWEBM(function(videoBlob){
+		var url = window.URL.createObjectURL(videoBlob);
+		document.getElementById('awesome').src = url; 
+		document.getElementById('download').style.display = '';
+		document.getElementById('download').href = url;
+});
+
+```
+
+#### Supported Browsers 
+
+1. IE > 10
+2. Chrome 
+3. Opera 
+4. Firefox
