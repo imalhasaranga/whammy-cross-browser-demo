@@ -590,7 +590,7 @@ var WhammyCrs;
 //#################################################################################
 
 
-		var whm_worker = new Worker('WhammyWorker.js');
+		
 		WhammyCrs = function(){
 			var self = this;
 			this.frames = [];
@@ -600,29 +600,47 @@ var WhammyCrs;
 			this.interaval = null;
 			this.progress = null;
 			this.onConvert = null;
-			whm_worker.addEventListener('message', function(e) {
-				++self.retrival;
-				self.onConvert && self.onConvert(++self.counterval);
-				self.frames.push(e.data);
-			}, false);
+			this.workers_lenght = 5;
+			this.workers = [];
+			this.rotation = 0;
+			this.framenumber = 0;
+			for(var x =0; x < self.workers_lenght; ++x){
+				this.workers.push(new Worker('WhammyWorker.js'));
+				this.workers[x].addEventListener('message', function(e) {
+					++self.retrival;
+					self.onConvert && self.onConvert(++self.counterval);
+					self.frames[e.data.frame] = e.data.webp;
+				}, false);
+			}
 		}
 
 		WhammyCrs.prototype.reset = function(){
 			this.counterval = 0;
+			this.rotation = 0;
 			this.retrival = 0;
 			this.frames = [];
 			this.framerate = 0;
+			this.framenumber = 0;
 			this.interaval && clearInterval(this.interaval);
 			this.interaval = null;
 		}
 
 		WhammyCrs.prototype.addFrame = function(imagedata,width,height){
+			var self = this;
 			--this.retrival;
-			whm_worker.postMessage({
+			var worker = self.workers[self.rotation];
+			worker.postMessage({
 				imagedata : imagedata,
 				width : width,
-				height : height
+				height : height,
+				frame: self.framenumber
 			});
+			++self.rotation;
+			++self.framenumber;
+			if(self.rotation == self.workers_lenght){
+				self.rotation = 0;
+			}
+			
 			/*
 			if(dataURL.match("data:image/webp")){
 				this.frames.push(dataURL);

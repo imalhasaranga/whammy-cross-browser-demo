@@ -164,7 +164,11 @@ function convertTowebp(otherformatDataurl,w,h){
 
 self.addEventListener('message', function(e) {
 	var wepimageurl = convertTowebp(e.data.imagedata,e.data.width,e.data.height);
-  	self.postMessage(wepimageurl);
+  	self.postMessage(
+	{
+		webp : wepimageurl,
+		frame : e.data.frame
+	});
 }, false);
 
 
